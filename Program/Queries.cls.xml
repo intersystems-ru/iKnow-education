@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Class name="Program.Queries">
+<TimeCreated>64390,76291.001418</TimeCreated>
+
+<Query name="Total">
+<Description>
+Count of Program pairs with a given similarity</Description>
+<Type>%SQLQuery</Type>
+<SqlQuery>SELECT 
+  round(100*SimilaritySimple, 0) As Similarity,
+  count(*) As "Count"
+FROM Program.Similarity
+GROUP BY round(100*SimilaritySimple, 0)
+ORDER BY Similarity</SqlQuery>
+</Query>
+
+<Query name="SimilarityAllGroupBy">
+<Description>
+Count of Program pairs with a given similarity, grouped into 10-percent groups</Description>
+<Type>%SQLQuery</Type>
+<SqlQuery>SELECT 
+  round(round(10*SimilaritySimple, 0)*10,0) As Similarity,
+  count(*) As "Count"
+FROM Program.Similarity 
+GROUP BY round(10*SimilaritySimple, 0)
+ORDER BY Similarity</SqlQuery>
+</Query>
+
+<Query name="SimilarInDifferentFaculties">
+<Description><![CDATA[
+List of programs in diggerent faculties with similarity > 0.95]]></Description>
+<Type>%SQLQuery</Type>
+<SqlQuery><![CDATA[SELECT
+  ID,
+  Program1 -> Program,
+  Program2 -> Program,
+  Program1 -> Faculty,
+  Program2 -> Faculty,
+  SimilaritySimple
+FROM Program.Similarity
+WHERE SimilaritySimple > 0.95 
+      AND Program1 -> Faculty <> Program2 -> Faculty]]></SqlQuery>
+</Query>
+
+<Query name="SimilarityAllSameFaculty">
+<Description>
+Count of Program pairs grouped into 10-percent groups by similarity.
+Each program pair is in the same facility.</Description>
+<Type>%SQLQuery</Type>
+<SqlQuery><![CDATA[SELECT 
+  round(round(10*SimilaritySimple, 0)*10,0) As Similarity,
+  count(*) As "Count"
+FROM Program.Similarity 
+WHERE Program1->Faculty=Program2->Faculty
+GROUP BY round(10*SimilaritySimple, 0)
+ORDER BY Similarity]]></SqlQuery>
+</Query>
+
+<Query name="SimilarityAllSameYear">
+<Description>
+Count of Program pairs grouped into 10-percent groups by similarity.
+Each program pair is in the same year.</Description>
+<Type>%SQLQuery</Type>
+<SqlQuery><![CDATA[SELECT 
+  round(round(10*SimilaritySimple, 0)*10,0) As Similarity,
+  count(*) As "Count"
+FROM Program.Similarity 
+WHERE Program1->Year=Program2->Year
+GROUP BY round(10*SimilaritySimple, 0)
+ORDER BY Similarity]]></SqlQuery>
+</Query>
+
+<Query name="SimilarityWithinYear">
+<Description>
+Count of Program pairs grouped into 10-percent groups by similarity.
+Each program pair is made within a year.</Description>
+<Type>%SQLQuery</Type>
+<SqlQuery><![CDATA[SELECT 
+  round(round(10*SimilaritySimple, 0)*10,0) As Similarity,
+  count(*) As "Count"
+FROM Program.Similarity 
+WHERE ABS(Program1->Year-Program2->Year)=1
+GROUP BY round(10*SimilaritySimple, 0)
+ORDER BY Similarity]]></SqlQuery>
+</Query>
+
+<Query name="SimilaritySameProgram">
+<Description>
+Count of Program pairs grouped into 10-percent groups by similarity.
+Each program pair has the same name</Description>
+<Type>%SQLQuery</Type>
+<SqlQuery><![CDATA[SELECT 
+  round(round(10*SimilaritySimple, 0)*10,0) As Similarity,
+  count(*) As "Count"
+FROM Program.Similarity 
+WHERE Program1->Program=Program2->Program
+GROUP BY round(10*SimilaritySimple, 0)
+ORDER BY Similarity]]></SqlQuery>
+</Query>
+
+<Query name="ListClassQueries">
+<Type>%SQLQuery</Type>
+<FormalSpec>class=$ClassName()</FormalSpec>
+<SqlQuery>SELECT 
+ Description, 
+ Name
+FROM %Dictionary.QueryDefinition 
+WHERE parent = :class 
+      And Name != 'ListClassQueries'
+ORDER BY SequenceNumber</SqlQuery>
+</Query>
+
+<Method name="DisplayAll">
+<Description>
+do ##class(Program.Queries).DisplayAll()</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>query:%String</FormalSpec>
+<Implementation><![CDATA[
+	Set RS = ..ListClassQueriesFunc()
+	While (RS.%Next()) {
+		Write RS.Description, !
+		Do ..DisplayQuery(RS.Name)
+		Write !, "____________", !
+	}
+]]></Implementation>
+</Method>
+
+<Method name="DisplayQuery">
+<Description>
+do ##class(Program.Queries).DisplayQuery("Total")</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>query:%String</FormalSpec>
+<Implementation><![CDATA[
+	Set RS = $ClassMethod(, query _ "Func")
+	Do RS.%Display()
+]]></Implementation>
+</Method>
+</Class>
+</Export>
