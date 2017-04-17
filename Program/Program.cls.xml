@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Class name="Program.Program">
+<Super>%Persistent</Super>
+<TimeCreated>64291,58837.109154</TimeCreated>
+
+<Property name="Program">
+<Type>%String</Type>
+<Parameter name="MAXLEN" value="500"/>
+</Property>
+
+<Property name="Year">
+<Type>%Integer</Type>
+</Property>
+
+<Property name="Faculty">
+<Type>%String</Type>
+</Property>
+
+<Property name="Chair">
+<Type>%String</Type>
+</Property>
+
+<Property name="StudentChair">
+<Type>%String</Type>
+</Property>
+
+<Property name="Major">
+<Type>%String</Type>
+<Parameter name="MAXLEN" value="100"/>
+</Property>
+
+<Property name="Level">
+<Type>%String</Type>
+</Property>
+
+<Property name="Text">
+<Type>%String</Type>
+<Parameter name="MAXLEN"/>
+</Property>
+
+<Method name="ProcessDir">
+<Description>
+w ##class(Program.Program).ProcessDir("D:\REA\Аспирантура\Программы ИТ\Файлы ИТ_txt")</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Dir</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	//Do ..%KillExtent()
+	Set Dir = ##class(%File).NormalizeDirectory(Dir)
+	#Dim RS AS %SQL.ClassQueryResultSet = ##class(%File).FileSetFunc(Dir, "*.txt")
+	While RS.%Next() {
+		//Write $Ll($Lfs(RS.Name, "_"))
+		Set Status = ..ProcessFile(RS.Name)
+		If $$$ISERR(Status) {
+			Write RS.Name,!
+			Write $System.Status.GetErrorText(Status)
+			Write !,"_________",!
+		}
+	}
+	Return $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="ProcessFile">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Filename</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	Set Name = ##class(%File).GetFilename(Filename)
+	Set Name = $Extract(Name, 1, *-4) // .txt
+		
+	Set List = $Lfs(Name, "_")
+	
+	For i = 1:1:$Ll(List) {
+		Set Piece = $Lg(List, i)
+		Set Piece = $Zstrip(Piece, "<>W")
+		Set $List(List, i) = Piece
+	}
+	
+	Set Program = $Lg(List, 1)
+	Set Year = $Lg(List, 2)
+	Set Faculty = $Lg(List, 3)
+	Set Chair = $Lg(List, 4)
+	Set StudentChair = $Lg(List, 5)
+	Set Major = $Lg(List, 6)
+	Set Level = $Lg(List, 7)
+	
+	If Level = "" {
+		Set Level = Major
+		Set Major = ""
+	}
+
+	
+	Set Stream = ##class(%Stream.FileCharacter).%New()
+	Set Status = Stream.LinkToFile(Filename)
+	Return:$$$ISERR(Status) Status
+	Set Text = Stream.Read($$$MaxCacheInt)
+	
+	Return ..Add(Program, Year, Faculty, Chair, StudentChair, Major, Level, Text)
+]]></Implementation>
+</Method>
+
+<Method name="Add">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Program,Year,Faculty,Chair,StudentChair,Major,Level,Text</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	Set Obj = ..%New(Program, Year, Faculty, Chair, StudentChair, Major, Level, Text)
+	Return Obj.%Save()
+]]></Implementation>
+</Method>
+
+<Method name="%OnNew">
+<FormalSpec>Program,Year,Faculty,Chair,StudentChair,Major,Level,Text</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	Set ..Program = Program
+	Set ..Year = Year
+	Set ..Faculty = Faculty
+	Set ..Chair = Chair
+	Set ..StudentChair = StudentChair
+	Set ..Major = Major
+	Set ..Level = Level
+	Set ..Text = Text
+	Return $$$OK
+]]></Implementation>
+</Method>
+
+<Storage name="Default">
+<Type>%Library.CacheStorage</Type>
+<DataLocation>^Program.ProgramD</DataLocation>
+<DefaultData>ProgramDefaultData</DefaultData>
+<IdLocation>^Program.ProgramD</IdLocation>
+<IndexLocation>^Program.ProgramI</IndexLocation>
+<StreamLocation>^Program.ProgramS</StreamLocation>
+<Data name="ProgramDefaultData">
+<Value name="1">
+<Value>%%CLASSNAME</Value>
+</Value>
+<Value name="2">
+<Value>Program</Value>
+</Value>
+<Value name="3">
+<Value>Year</Value>
+</Value>
+<Value name="4">
+<Value>Faculty</Value>
+</Value>
+<Value name="5">
+<Value>Chair</Value>
+</Value>
+<Value name="6">
+<Value>Major</Value>
+</Value>
+<Value name="7">
+<Value>Level</Value>
+</Value>
+<Value name="8">
+<Value>Text</Value>
+</Value>
+<Value name="9">
+<Value>StudentChair</Value>
+</Value>
+</Data>
+</Storage>
+</Class>
+</Export>

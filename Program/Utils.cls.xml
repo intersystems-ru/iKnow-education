@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Class name="Program.Utils">
+<Abstract>1</Abstract>
+<IncludeCode>%IKPublic</IncludeCode>
+<TimeCreated>64291,61266.305543</TimeCreated>
+
+<Method name="Similar">
+<Description>
+do ##class(Program.Utils).Similar()</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&Result,SourceId=1]]></FormalSpec>
+<Implementation><![CDATA[
+	Set Result = ""
+	#dim domainid As %Integer = 1
+	#dim page As %Integer = 1
+	#dim pagesize As %Integer = 10
+	#dim filter As %iKnow.Filters.Filter = ""
+	#dim algorithm As %String = $$$SIMSRCDOMENTS //SIMSRCEQUIVS SIMSRCDOMENTS SIMSRCSIMPLE
+	#dim algorithmParams As %List = ""
+	#dim blackListIds As %List = "" //$lb(1)
+	set sc = ##class(%iKnow.Queries.SourceAPI).GetSimilar(.Result, domainid, SourceId, page, pagesize, filter, algorithm, algorithmParams, blackListIds)
+	Return sc
+]]></Implementation>
+</Method>
+</Class>
+</Export>

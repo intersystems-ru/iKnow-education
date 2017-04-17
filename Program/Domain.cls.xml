@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Class name="Program.Domain">
+<ProcedureBlock>1</ProcedureBlock>
+<Super>%iKnow.DomainDefinition</Super>
+<TimeCreated>64291,60522.130614</TimeCreated>
+
+<XData name="Domain">
+<XMLNamespace>http://www.intersystems.com/iknow</XMLNamespace>
+<Data><![CDATA[
+<domain name="Programs" disabled="false" allowCustomUpdates="false">
+<parameter name="DefaultConfig" value="Programs.Configuration" isList="false" />
+<data dropBeforeBuild="true">
+<table listname="Programs" batchMode="true" disabled="false" listerClass="%iKnow.Source.SQL.Lister" tableName="Program.Program" idField="ID" groupField="ID" dataFields="Text" metadataColumns="Program,Year,Faculty,Chair,StudentChair,Major" metadataFields="Program,Year,Faculty,Chair,StudentChair,Major">
+<parameter value="SELECT ID __idField, ID __groupField, Text, Program,Year,Faculty,Chair,StudentChair,Major FROM Program.Program" isList="false" />
+<parameter value="__idField" isList="false" />
+<parameter value="__groupField" isList="false" />
+<parameter value="Text" isList="true" />
+<parameter value="Program,Year,Faculty,Chair,StudentChair,Major" isList="true" />
+<parameter value="Program,Year,Faculty,Chair,StudentChair,Major" isList="true" />
+</table>
+</data>
+<matching disabled="false" dropBeforeBuild="true" autoExecute="true" ignoreDictionaryErrors="true">
+<dictionary name="Основной" language="ru" disabled="false">
+<item name="информационные" uri=":информационные:информационные" language="ru" disabled="false">
+<term string="информационных" language="ru" disabled="false" />
+<term string="информационные" language="ru" disabled="false" />
+</item>
+</dictionary>
+</matching>
+<metadata>
+<field name="Program" operators="=" dataType="STRING" storage="1" caseSensitive="false" disabled="false" />
+<field name="Year" operators="=, !=, &lt;, &lt;=, &gt;, &gt;=, BETWEEN" dataType="NUMBER" storage="1" caseSensitive="false" disabled="false" />
+<field name="Faculty" operators="=" dataType="STRING" storage="0" caseSensitive="false" disabled="false" />
+<field name="Chair" operators="=" dataType="STRING" storage="0" caseSensitive="false" disabled="false" />
+<field name="StudentChair" operators="=" dataType="STRING" storage="0" caseSensitive="false" disabled="false" />
+<field name="Major" operators="=" dataType="STRING" storage="0" caseSensitive="false" disabled="false" />
+<field name="Level" operators="=" dataType="STRING" storage="0" caseSensitive="false" disabled="false" />
+</metadata>
+<configuration name="Programs.Configuration" detectLanguage="false" languages="en" userDictionary="Programs.Dictionary#1" summarize="true" maxConceptLength="0" />
+<userDictionary name="Programs.Dictionary#1" />
+<blacklist name="Blacklist #1">
+<entry>для</entry>
+<entry>баллов</entry>
+<entry>при</entry>
+<entry>владеть</entry>
+<entry>решения</entry>
+<entry>спс</entry>
+<entry>уметь</entry>
+<entry>как</entry>
+<entry>освоения</entry>
+<entry>средства</entry>
+<entry>возможности</entry>
+<entry>оценки</entry>
+<entry>г.в</entry>
+<entry>соответствии</entry>
+<entry>и</entry>
+<entry>в</entry>
+<entry>с</entry>
+<entry>1</entry>
+</blacklist>
+</domain>
+]]></Data>
+</XData>
+</Class>
+</Export>

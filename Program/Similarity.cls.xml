@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Class name="Program.Similarity">
+<Super>%Persistent</Super>
+<TimeCreated>64291,68599.586449</TimeCreated>
+
+<Property name="Program1">
+<Type>Program</Type>
+</Property>
+
+<Property name="Program2">
+<Type>Program</Type>
+</Property>
+
+<Property name="SimilaritySimple">
+<Type>%Numeric</Type>
+<Parameter name="SCALE" value="4"/>
+</Property>
+
+<Method name="Populate">
+<Description>
+Do ##class(Program.Similarity).Populate()</Description>
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[
+	Do ..%KillExtent()
+	#Dim RS AS %SQL.ClassQueryResultSet = ##class(Program).ExtentFunc()
+	While RS.%Next() {
+		Set Id = RS.ID
+		Set Status = ..PopulateOne(RS.Id)
+		If $$$ISERR(Status) {
+			Write RS.Id,!
+			Write $System.Status.GetErrorText(Status)
+			Write !,"_________",!
+		}
+	}
+]]></Implementation>
+</Method>
+
+<Method name="PopulateOne">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Id</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	#Dim Status As %Status = $$$OK
+	Set Status = ##class(Utils).Similar(.Result, Id)
+	// Get first subscript
+	Set Key=$Order(Result(""))
+	While (Key'="") {
+		Set SimilarList = Result(Key)		
+		
+		Set SimilarId = $Lg(SimilarList, 1)
+		Set SimilaritySimple = $Lg(SimilarList, 3)
+		Set Status = $$$ADDSC(Status, ..Add(Id, SimilarId, SimilaritySimple))
+		
+		// Get next subscript 
+		Set Key = $Order(Result(Key))
+	}
+	Return Status
+]]></Implementation>
+</Method>
+
+<Method name="Add">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Program1:%Integer,Program2:%Integer,SimilaritySimple</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	Set Obj = ..%New(Program1, Program2, SimilaritySimple)
+	Return Obj.%Save()
+]]></Implementation>
+</Method>
+
+<Method name="%OnNew">
+<FormalSpec>Program1:%Integer,Program2:%Integer,SimilaritySimple</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	Do ..Program1SetObjectId(Program1)
+	Do ..Program2SetObjectId(Program2)
+	Set ..SimilaritySimple = SimilaritySimple
+	Return $$$OK
+]]></Implementation>
+</Method>
+
+<Storage name="Default">
+<Type>%Library.CacheStorage</Type>
+<DataLocation>^Program.SimilarityD</DataLocation>
+<DefaultData>SimilarityDefaultData</DefaultData>
+<IdLocation>^Program.SimilarityD</IdLocation>
+<IndexLocation>^Program.SimilarityI</IndexLocation>
+<StreamLocation>^Program.SimilarityS</StreamLocation>
+<Data name="SimilarityDefaultData">
+<Value name="1">
+<Value>%%CLASSNAME</Value>
+</Value>
+<Value name="2">
+<Value>Program1</Value>
+</Value>
+<Value name="3">
+<Value>Program2</Value>
+</Value>
+<Value name="4">
+<Value>SimilaritySimple</Value>
+</Value>
+</Data>
+</Storage>
+</Class>
+</Export>
